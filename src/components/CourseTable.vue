@@ -15,6 +15,18 @@
             <!-- Search Bar -->
             <!-- TODO: search courses by code or title -->
         </div>
+
+        <Container
+          :get-child-payload="getChildPayload0"
+          @drop="onDrop('basket', $event)"
+          class="container"
+        >
+          <Draggable v-for="item in courseList" :key="item.id">
+            <div class="draggable">
+              {{ item.code }}
+            </div>
+          </Draggable>
+        </Container>
     </div>
 
     <!-- 4 columns, one column per year  -->
@@ -28,16 +40,35 @@
 </template>
 
 <script>
+import { Container, Draggable } from "vue-smooth-dnd";
+
 export default {
   data () {
     return {
-      rosterList: [],
+      rosterList: ["FA19", "SP19", "FA18", "SP18"],
       selectedRoster: "",
+      courseList: [
+        { code: "CS 2110", name: "ABCs of Programming", id: 0 },
+        { code: "ASTRO 1101", name: "Intro to Astronomy", id: 1 },
+        { code: "CHEM 2090", name: "Chemistry Chaos", id: 2 },
+        { code: "PHYS 1112", name: "Physics Appreciation", id: 3 },
+        { code: "INFO 1300", name: "Intro to Web Design Principles", id: 4 },
+        { code: "MATH 1910", name: "Calculus Appreciation", id: 5 }
+      ],
     }
   },
 }
 </script>
 
 <style lang="scss" scoped>
+$draggable-bg-color: #333;
+$draggable-text-color: #ddd;
+
+.draggable {
+    color: $draggable-text-color;
+    background-color: $draggable-bg-color;
+    text-align: center;
+    padding: 6px;
+}
 
 </style>
