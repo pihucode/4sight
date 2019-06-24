@@ -45,14 +45,7 @@ export default {
     return {
       rosterList: [],
       selectedRoster: "",
-      courseList: [
-        { code: "CS 2110", name: "ABCs of Programming", id: 0 },
-        { code: "ASTRO 1101", name: "Intro to Astronomy", id: 1 },
-        { code: "CHEM 2090", name: "Chemistry Chaos", id: 2 },
-        { code: "PHYS 1112", name: "Physics Appreciation", id: 3 },
-        { code: "INFO 1300", name: "Intro to Web Design Principles", id: 4 },
-        { code: "MATH 1910", name: "Calculus Appreciation", id: 5 }
-      ]
+      courseList: [],
     };
   },
   created() {
@@ -69,6 +62,28 @@ export default {
         });
       });
   },
+    methods: {
+    // Load courses when roster changes
+    loadCourses: function() {
+      // Prevents a "type error: cannot read property of undefined"
+      // keyword “this” goes out of scope of the function, so we define "this"
+      var self = this;
+
+      // Clean course list
+      this.courseList = [];
+
+      // Add courses to course list
+      db.collection("rosters")
+        .doc(this.selectedRoster)
+        .collection("courses")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            self.courseList.push(doc.data());
+          });
+        });
+    },
+    },
 };
 </script>
 
