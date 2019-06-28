@@ -13,7 +13,14 @@
         </select>
 
         <!-- Search Bar -->
-        <!-- TODO: search courses by code or title -->
+        <!-- Search courses by code (PHYS 1112) or 
+            title (Physics I: Mechanics & Heat) -->
+        <v-select
+            v-model="selectedCourse"
+            placeholder="Add a course"
+            @input="addToBasket(selectedCourse)"
+            :options="courseList"
+          ></v-select>
       </div>
 
       <Container
@@ -46,6 +53,7 @@ export default {
       rosterList: [],
       selectedRoster: "",
       courseList: [],
+      selectedCourse: "",
     };
   },
   created() {
