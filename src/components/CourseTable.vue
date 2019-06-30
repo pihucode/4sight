@@ -20,6 +20,7 @@
             placeholder="Add a course"
             @input="addToBasket(selectedCourse)"
             :options="courseList"
+            class="style-chooser"
           ></v-select>
       </div>
 
@@ -105,4 +106,19 @@ $draggable-text-color: #ddd;
   text-align: center;
   padding: 6px;
 }
+
+/* Vue-select styling */
+@import "vue-select/src/scss/vue-select.scss";
+
+// Prevents users from using the 'x' symbol or 'clear selected' function of the 
+// search bar. The 'clear selected' function causes the courses in 
+// course basket to be deleted/buggy.
+.style-chooser .vs__clear {
+  visibility: hidden;
+}
+
+.style-chooser .vs__dropdown-menu {
+  max-height: 240px;
+}
+
 </style>
