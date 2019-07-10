@@ -20,12 +20,11 @@
             placeholder="Add a course"
             @input="addToBasket(selectedCourse)"
             :options="courseList"
-            class="style-chooser"
           ></v-select>
       </div>
 
       <Container
-        :get-child-payload="getChildPayload0"
+        :get-child-payload="getChildPayloadBasket"
         @drop="onDrop('basket', $event)"
         class="container"
       >
@@ -47,14 +46,18 @@
 <script>
 import db from "../firebase.js";
 import { Container, Draggable } from "vue-smooth-dnd";
+import vSelect from "vue-select";
 
 export default {
+  
+  components: { Container, Draggable, vSelect },
   data() {
     return {
       rosterList: [],
       selectedRoster: "",
       courseList: [],
       selectedCourse: "",
+      basket: [],
     };
   },
   created() {
@@ -92,13 +95,35 @@ export default {
           });
         });
     },
+
+    // SEARCH BAR
+    addToBasket: function(selectedCourse) {
+      // Prevent pushing a duplicate course
+      if (!this.basket.includes(selectedCourse)) {
+        this.basket.push(selectedCourse);
+      }
+    },
+
+    // DRAG AND DROP METHODS
+    onDrop(collection, dropResult) {
+      this[collection] = applyDrag(this[collection], dropResult);
+    },
+
+    getChildPayloadBasket(index) {
+      return this.basket[index];
+    },
+
     },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+// no scope else draggable container and v-select styling will not work
+
 $draggable-bg-color: #333;
 $draggable-text-color: #ddd;
+
+$select-bg: #c0c0c0;
 
 .draggable {
   color: $draggable-text-color;
@@ -110,15 +135,20 @@ $draggable-text-color: #ddd;
 /* Vue-select styling */
 @import "vue-select/src/scss/vue-select.scss";
 
-// Prevents users from using the 'x' symbol or 'clear selected' function of the 
-// search bar. The 'clear selected' function causes the courses in 
-// course basket to be deleted/buggy.
-.style-chooser .vs__clear {
-  visibility: hidden;
+.v-select {
+  border-radius: 6px;
+  background-color: $select-bg;
 }
 
-.style-chooser .vs__dropdown-menu {
-  max-height: 240px;
-}
+// // Prevents users from using the 'x' symbol or 'clear selected' function of the 
+// // search bar. The 'clear selected' function causes the courses in 
+// // course basket to be deleted/buggy.
+// .style-chooser .vs__clear {
+//   visibility: hidden;
+// }
+
+// .style-chooser .vs__dropdown-menu {
+//   max-height: 240px;
+// }
 
 </style>
