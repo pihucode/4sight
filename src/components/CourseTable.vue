@@ -14,15 +14,16 @@
 
         <!-- Search Bar -->
         <!-- Search courses by code (PHYS 1112) or 
-            title (Physics I: Mechanics & Heat) -->
+        title (Physics I: Mechanics & Heat)-->
         <v-select
-            v-model="selectedCourse"
-            placeholder="Add a course"
-            @input="addToBasket(selectedCourse)"
-            :options="courseList"
-          ></v-select>
+          v-model="selectedCourse"
+          placeholder="Add a course"
+          @input="addToBasket(selectedCourse)"
+          :options="courseList"
+        ></v-select>
       </div>
 
+      <!-- Course Basket -->
       <Container
         :get-child-payload="getChildPayloadBasket"
         @drop="onDrop('basket', $event)"
@@ -35,11 +36,58 @@
     </div>
 
     <!-- 4 columns, one column per year  -->
-    <div class="course-columns">
-      <div class="column">
-        <!-- TODO -->
+    <div
+      class="course-columns"
+      v-for="column in columns" :key="column.id"
+    >
+      <!-- Fall Section-->
+        <div>
+          <div class="container-crown">
+            <h2>Fall</h2>
+          </div>
+          <Container
+            group-name="1"
+            :get-child-payload="getChildPayload(column.id)"
+            @drop="onDrop('items1', $event)"
+            :drop-placeholder="dropPlaceholder"
+            :remove-on-drop-out="true"
+            class="container"
+          >
+            <Draggable v-for="item in items1" :key="item.id">
+              <div class="draggable-item">
+                <!-- TODO: Display course info here -->
+                <!-- Course code -->
+                <!-- Course name -->
+                <!-- Course credits -->
+              </div>
+            </Draggable>
+          </Container>
+        </div>
+
+        <!-- Spring Section -->
+        <div>
+          <div class="container-crown">
+            <h2>Spring</h2>
+          </div>
+          <Container
+            group-name="1"
+            :get-child-payload="getChildPayload(column.id)"
+            @drop="onDrop('items2', $event)"
+            :drop-placeholder="dropPlaceholder"
+            class="container"
+          >
+            <Draggable v-for="item in items2" :key="item.id">
+              <div class="draggable-item">
+                <!-- TODO: Display course info here -->
+                <!-- Course code -->
+                <!-- Course name -->
+                <!-- Course credits -->
+              </div>
+            </Draggable>
+          </Container>
+        </div>
       </div>
-    </div>
+
   </div>
 </template>
 
@@ -49,7 +97,6 @@ import { Container, Draggable } from "vue-smooth-dnd";
 import vSelect from "vue-select";
 
 export default {
-  
   components: { Container, Draggable, vSelect },
   data() {
     return {
@@ -58,6 +105,9 @@ export default {
       courseList: [],
       selectedCourse: "",
       basket: [],
+      payloads: {
+        //payloads here
+      }
     };
   },
   created() {
@@ -74,7 +124,7 @@ export default {
         });
       });
   },
-    methods: {
+  methods: {
     // Load courses when roster changes
     loadCourses: function() {
       // Prevents a "type error: cannot read property of undefined"
@@ -113,6 +163,11 @@ export default {
       return this.basket[index];
     },
 
+    // Reduce redundancy
+    getCardPayload(columnId) {
+      return index => {
+        return this.payloads.filter(p => p.id === columnId)[0].payload[index]
+      }
     },
 };
 </script>
@@ -140,8 +195,8 @@ $select-bg: #c0c0c0;
   background-color: $select-bg;
 }
 
-// // Prevents users from using the 'x' symbol or 'clear selected' function of the 
-// // search bar. The 'clear selected' function causes the courses in 
+// // Prevents users from using the 'x' symbol or 'clear selected' function of the
+// // search bar. The 'clear selected' function causes the courses in
 // // course basket to be deleted/buggy.
 // .style-chooser .vs__clear {
 //   visibility: hidden;
@@ -150,5 +205,4 @@ $select-bg: #c0c0c0;
 // .style-chooser .vs__dropdown-menu {
 //   max-height: 240px;
 // }
-
 </style>
