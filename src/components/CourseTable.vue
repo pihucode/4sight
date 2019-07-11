@@ -35,19 +35,17 @@
       </Container>
     </div>
 
-    <!-- 4 columns, one column per year  -->
-    <div
-      class="course-columns"
-      v-for="column in columns" :key="column.id"
-    >
-      <!-- Fall Section-->
+    <!-- 4 columns, one column per year -->
+    <!-- Each column has fall and spring -->
+      <!-- Freshman Fall -->
+      <div class="group">
         <div>
           <div class="container-crown">
             <h2>Fall</h2>
           </div>
           <Container
             group-name="1"
-            :get-child-payload="getChildPayload(column.id)"
+            :get-child-payload="getChildPayload1"
             @drop="onDrop('items1', $event)"
             :drop-placeholder="dropPlaceholder"
             :remove-on-drop-out="true"
@@ -55,33 +53,41 @@
           >
             <Draggable v-for="item in items1" :key="item.id">
               <div class="draggable-item">
-                <!-- TODO: Display course info here -->
-                <!-- Course code -->
-                <!-- Course name -->
-                <!-- Course credits -->
+                {{ item.code }}
+                <br />
+                <p class="subtext">
+                  {{ item.credits }} Credits
+                  <br />
+                  {{ item.offered }}
+                  <br />
+                </p>
               </div>
             </Draggable>
           </Container>
         </div>
 
-        <!-- Spring Section -->
+        <!-- Freshmen Spring -->
         <div>
           <div class="container-crown">
             <h2>Spring</h2>
           </div>
           <Container
             group-name="1"
-            :get-child-payload="getChildPayload(column.id)"
+            :get-child-payload="getChildPayload2"
             @drop="onDrop('items2', $event)"
             :drop-placeholder="dropPlaceholder"
             class="container"
           >
             <Draggable v-for="item in items2" :key="item.id">
               <div class="draggable-item">
-                <!-- TODO: Display course info here -->
-                <!-- Course code -->
-                <!-- Course name -->
-                <!-- Course credits -->
+                {{ item.code }}
+                <br />
+                <p class="subtext">
+                  {{ item.credits }} Credits
+                  <br />
+                  {{ item.offered }}
+                  <br />
+                </p>
               </div>
             </Draggable>
           </Container>
@@ -105,9 +111,15 @@ export default {
       courseList: [],
       selectedCourse: "",
       basket: [],
-      payloads: {
-        //payloads here
-      }
+
+      // DRAG AND DROP
+      dropPlaceholder: {
+        className: "ghost",
+        animationDuration: "150",
+        showOnTop: true
+      },
+      items1: [],
+      items2: [],
     };
   },
   created() {
@@ -163,12 +175,13 @@ export default {
       return this.basket[index];
     },
 
-    // Reduce redundancy
-    getCardPayload(columnId) {
-      return index => {
-        return this.payloads.filter(p => p.id === columnId)[0].payload[index]
-      }
+    getChildPayload1(index) {
+      return this.items1[index];
     },
+    getChildPayload2(index) {
+      return this.items2[index];
+    },
+  },
 };
 </script>
 
@@ -188,7 +201,7 @@ $select-bg: #c0c0c0;
 }
 
 /* Vue-select styling */
-@import "vue-select/src/scss/vue-select.scss";
+// @import "vue-select/src/scss/vue-select.scss";
 
 .v-select {
   border-radius: 6px;
