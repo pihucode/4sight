@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="groups">
     <!-- COURSE BASKET     -->
-    <div class="course-basket">
+    <div class="group">
       <div class="crown">
         <h2>Course Basket</h2>
 
@@ -40,7 +40,7 @@
       <!-- Freshman Fall -->
       <div class="group">
         <div>
-          <div class="container-crown">
+          <div class="crown">
             <h2>Fall</h2>
             <p>{{ items1.length }} Courses</p>
             <p>{{ totalCredits1 }} Credits</p>
@@ -202,16 +202,79 @@ export default {
 <style lang="scss">
 // no scope else draggable container and v-select styling will not work
 
-$draggable-bg-color: #333;
-$draggable-text-color: #ddd;
+// Variables
+$box-bg-color: #1f262a;
+$container-bg-color: rgb(78, 78, 82);
+$draggable-bg: #ffbf00;
+
+$draggable-text-color: #361b28;
+
+$ghost-bg-color: #ffc60b;
+$ghost-border: 2px dashed #ff8b00;
+
+$h2-text-color: #c0c0c0;
+$p-text-color: #c0c0c0;
+$p-font: Verdana, Arial, sans-serif;
 
 $select-bg: #c0c0c0;
 
-.draggable {
+p {
+  color: $p-text-color;
+  font-style: $p-font;
+}
+
+.groups {
+  display: flex;
+  /* justify-content: stretch; */
+  margin-top: 50px;
+  margin-right: 50px;
+}
+.group {
+  margin: 8px;
+  padding: 12px;
+  width: 200px;
+  min-height: 300px;
+  background-color: $box-bg-color;
+  border-radius: 8px;
+}
+
+.container {
+  background-color: $container-bg-color;
+  padding: 6px 0;
+  min-height: 120px;
+}
+
+.draggable-item {
+  padding: 4px;
+  margin: 6px 12px;
+  background-color: $draggable-bg;
   color: $draggable-text-color;
-  background-color: $draggable-bg-color;
   text-align: center;
-  padding: 6px;
+}
+
+h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 22px;
+  color: $h2-text-color;
+}
+
+.ghost {
+  opacity: 0.65;
+  border: $ghost-border;
+  background-color: $ghost-bg-color;
+}
+
+.draggable-item,
+.ghost {
+  border-radius: 6px;
+}
+
+.subtext {
+  font-size: 16px;
+  text-align: right;
+  color: $draggable-text-color;
+  margin: 0;
 }
 
 /* Vue-select styling */
