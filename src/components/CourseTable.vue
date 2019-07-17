@@ -42,6 +42,8 @@
         <div>
           <div class="container-crown">
             <h2>Fall</h2>
+            <p>{{ items1.length }} Courses</p>
+            <p>{{ totalCredits1 }} Credits</p>
           </div>
           <Container
             group-name="1"
@@ -70,6 +72,8 @@
         <div>
           <div class="container-crown">
             <h2>Spring</h2>
+            <p>{{ items2.length }} Courses</p>
+            <p>{{ totalCredits2 }} Credits</p>
           </div>
           <Container
             group-name="1"
@@ -136,6 +140,16 @@ export default {
         });
       });
   },
+  
+  computed: {
+    totalCredits1: function() {
+      return this.items1.reduce((acc, item) => acc + item.credits, 0);
+    },
+    totalCredits2: function() {
+      return this.items2.reduce((acc, item) => acc + item.credits, 0);
+    }
+  },
+
   methods: {
     // Load courses when roster changes
     loadCourses: function() {
