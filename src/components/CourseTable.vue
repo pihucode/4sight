@@ -30,7 +30,7 @@
         class="container"
       >
         <Draggable v-for="item in courseList" :key="item.id">
-          <div class="draggable">{{ item.code }}</div>
+          <div class="draggable-item" @click="showModal">{{ item.code }}</div>
         </Draggable>
       </Container>
     </div>
@@ -54,7 +54,7 @@
             class="container"
           >
             <Draggable v-for="item in items1" :key="item.id">
-              <div class="draggable-item">
+              <div class="draggable-item" @click="showModal">
                 {{ item.code }}
                 <br />
                 <p class="subtext">
@@ -63,6 +63,16 @@
                   {{ item.offered }}
                   <br />
                 </p>
+
+              <!-- Modal Component -->
+              <modal v-show="isModalVisible">
+                <h3 slot="header">{{ item.label }}</h3>
+                <div slot="body">
+                  <p>{{ item.credits }} Credits</p>
+                  <p>Offered: {{ item.offered }}</p>
+                  <p>{{ item.descr }}</p>
+                </div>
+              </modal>
               </div>
             </Draggable>
           </Container>
@@ -105,16 +115,23 @@
 import db from "../firebase.js";
 import { Container, Draggable } from "vue-smooth-dnd";
 import vSelect from "vue-select";
+import modal from "./CourseModal.vue";
 
 export default {
-  components: { Container, Draggable, vSelect },
+  components: { Container, Draggable, vSelect, modal },
   data() {
     return {
+
+      //SEARCH BAR
       rosterList: [],
       selectedRoster: "",
+      search: "",
       courseList: [],
       selectedCourse: "",
       basket: [],
+
+      //COURSE MODAL
+      isModalVisible: false,
 
       // DRAG AND DROP
       dropPlaceholder: {
@@ -178,6 +195,15 @@ export default {
       if (!this.basket.includes(selectedCourse)) {
         this.basket.push(selectedCourse);
       }
+    },
+
+    //COURSE MODAL
+    showModal() {
+      this.isModalVisible = true;
+    },
+    
+    closeModal() {
+      this.isModalVisible = false;
     },
 
     // DRAG AND DROP METHODS
