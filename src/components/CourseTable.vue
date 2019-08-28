@@ -120,7 +120,13 @@ import modal from "./CourseModal.vue";
 export default {
   components: { Container, Draggable, vSelect, modal },
   data() {
-    return {
+    return { 
+    
+      //SCHEMAS
+      //schemaKey should be passed from previous component
+      // schemaKey: "evGVN6f8wIKZq9TWBwTz",
+      //schema stores name, basket, fall1, spring1, fall2, spring2, ...
+      schema: [],
 
       //SEARCH BAR
       rosterList: [],
@@ -128,7 +134,6 @@ export default {
       search: "",
       courseList: [],
       selectedCourse: "",
-      basket: [],
 
       //COURSE MODAL
       isModalVisible: false,
@@ -138,9 +143,14 @@ export default {
         className: "ghost",
         animationDuration: "150",
         showOnTop: true
-      },
-      items1: [],
-      items2: [],
+      },      
+      
+      // COURSE HOLDERS
+      // basket: [],
+      // items1: [],
+      // items2: [],
+
+      courseMap: { basket: [], items1: [], items2: [] },
     };
   },
   created() {
@@ -155,6 +165,27 @@ export default {
         querySnapshot.forEach(function(doc) {
           self.rosterList.push(doc.id);
         });
+      });
+
+    // NOTE: accessing specific fields of a firestore document is difficult,
+    // Instead, we store the entire document with all its fields as a single
+    // object in our vue data()
+    // This object will be named "schema" which will:
+    // Read contents of schema
+    // Load contents to the lists: basket, items1, items2, ... 
+    var schemaDoc = db.collection("schemas").doc(self.schemaKey);
+    schemaDoc
+      .get()
+      .then(function(doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          self.schema = doc.data();
+        } else {
+          console.log("No such document!");
+        }
+      })
+      .catch(function(error) {
+        console.log("Error getting document:", error);
       });
   },
   
