@@ -37,32 +37,32 @@
 
     <!-- 4 columns, one column per year -->
     <!-- Each column has fall and spring -->
-      <!-- Freshman Fall -->
-      <div class="group">
-        <div>
-          <div class="crown">
-            <h2>Fall</h2>
-            <p>{{ items1.length }} Courses</p>
-            <p>{{ totalCredits1 }} Credits</p>
-          </div>
-          <Container
-            group-name="1"
-            :get-child-payload="getChildPayload1"
-            @drop="onDrop('items1', $event)"
-            :drop-placeholder="dropPlaceholder"
-            :remove-on-drop-out="true"
-            class="container"
-          >
-            <Draggable v-for="item in items1" :key="item.id">
-              <div class="draggable-item" @click="showModal">
-                {{ item.code }}
+    <!-- Freshman Fall -->
+    <div class="group">
+      <div>
+        <div class="crown">
+          <h2>Fall</h2>
+          <p>{{ items1.length }} Courses</p>
+          <p>{{ totalCredits1 }} Credits</p>
+        </div>
+        <Container
+          group-name="1"
+          :get-child-payload="getChildPayload1"
+          @drop="onDrop('items1', $event)"
+          :drop-placeholder="dropPlaceholder"
+          :remove-on-drop-out="true"
+          class="container"
+        >
+          <Draggable v-for="item in items1" :key="item.id">
+            <div class="draggable-item" @click="showModal">
+              {{ item.code }}
+              <br />
+              <p class="subtext">
+                {{ item.credits }} Credits
                 <br />
-                <p class="subtext">
-                  {{ item.credits }} Credits
-                  <br />
-                  {{ item.offered }}
-                  <br />
-                </p>
+                {{ item.offered }}
+                <br />
+              </p>
 
               <!-- Modal Component -->
               <modal v-show="isModalVisible">
@@ -73,41 +73,40 @@
                   <p>{{ item.descr }}</p>
                 </div>
               </modal>
-              </div>
-            </Draggable>
-          </Container>
-        </div>
-
-        <!-- Freshmen Spring -->
-        <div>
-          <div class="container-crown">
-            <h2>Spring</h2>
-            <p>{{ items2.length }} Courses</p>
-            <p>{{ totalCredits2 }} Credits</p>
-          </div>
-          <Container
-            group-name="1"
-            :get-child-payload="getChildPayload2"
-            @drop="onDrop('items2', $event)"
-            :drop-placeholder="dropPlaceholder"
-            class="container"
-          >
-            <Draggable v-for="item in items2" :key="item.id">
-              <div class="draggable-item">
-                {{ item.code }}
-                <br />
-                <p class="subtext">
-                  {{ item.credits }} Credits
-                  <br />
-                  {{ item.offered }}
-                  <br />
-                </p>
-              </div>
-            </Draggable>
-          </Container>
-        </div>
+            </div>
+          </Draggable>
+        </Container>
       </div>
 
+      <!-- Freshmen Spring -->
+      <div>
+        <div class="container-crown">
+          <h2>Spring</h2>
+          <p>{{ items2.length }} Courses</p>
+          <p>{{ totalCredits2 }} Credits</p>
+        </div>
+        <Container
+          group-name="1"
+          :get-child-payload="getChildPayload2"
+          @drop="onDrop('items2', $event)"
+          :drop-placeholder="dropPlaceholder"
+          class="container"
+        >
+          <Draggable v-for="item in items2" :key="item.id">
+            <div class="draggable-item">
+              {{ item.code }}
+              <br />
+              <p class="subtext">
+                {{ item.credits }} Credits
+                <br />
+                {{ item.offered }}
+                <br />
+              </p>
+            </div>
+          </Draggable>
+        </Container>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -120,8 +119,7 @@ import modal from "./CourseModal.vue";
 export default {
   components: { Container, Draggable, vSelect, modal },
   data() {
-    return { 
-    
+    return {
       //SCHEMAS
       //schemaKey should be passed from previous component
       // schemaKey: "evGVN6f8wIKZq9TWBwTz",
@@ -143,14 +141,14 @@ export default {
         className: "ghost",
         animationDuration: "150",
         showOnTop: true
-      },      
-      
+      },
+
       // COURSE HOLDERS
       // basket: [],
       // items1: [],
       // items2: [],
 
-      courseMap: { basket: [], items1: [], items2: [] },
+      courseMap: { basket: [], items1: [], items2: [] }
     };
   },
   created() {
@@ -172,7 +170,7 @@ export default {
     // object in our vue data()
     // This object will be named "schema" which will:
     // Read contents of schema
-    // Load contents to the lists: basket, items1, items2, ... 
+    // Load contents to the lists: basket, items1, items2, ...
     var schemaDoc = db.collection("schemas").doc(self.schemaKey);
     schemaDoc
       .get()
@@ -188,13 +186,13 @@ export default {
         console.log("Error getting document:", error);
       });
   },
-  
+
   computed: {
     totalCredits1: function() {
-      return this.items1.reduce((acc, item) => acc + item.credits, 0);
+      return this.courseMap.items1.reduce((acc, item) => acc + item.credits, 0);
     },
     totalCredits2: function() {
-      return this.items2.reduce((acc, item) => acc + item.credits, 0);
+      return this.courseMap.items2.reduce((acc, item) => acc + item.credits, 0);
     }
   },
 
@@ -223,8 +221,21 @@ export default {
     // SEARCH BAR
     addToBasket: function(selectedCourse) {
       // Prevent pushing a duplicate course
-      if (!this.basket.includes(selectedCourse)) {
-        this.basket.push(selectedCourse);
+      if (!this.courseMap.basket.includes(selectedCourse)) {
+        this.courseMap.basket.push(selectedCourse);
+
+        // Update firestore field
+        var schemaDoc = db.collection("schemas").doc(this.schemaKey);
+        return schemaDoc
+          .update({
+            courseMap: this.courseMap
+          })
+          .then(function() {
+            console.log("Document successfully updated!");
+          })
+          .catch(function(error) {
+            console.error("Error updating document: ", error);
+          });
       }
     },
 
@@ -232,27 +243,49 @@ export default {
     showModal() {
       this.isModalVisible = true;
     },
-    
+
     closeModal() {
       this.isModalVisible = false;
     },
 
     // DRAG AND DROP METHODS
     onDrop(collection, dropResult) {
-      this[collection] = applyDrag(this[collection], dropResult);
+      /* HANDLES LOCAL DATA
+       (ie, basket, items1, items2)
+       NOTE: Writing "this.courseMap.collection" gives undefined
+       so we must write "this.courseMap[collection]"
+      **/
+      this.courseMap[collection] = applyDrag(
+        this.courseMap[collection],
+        dropResult
+      );
+
+      // HANDLES FIRESTORE
+      // "schemaDoc" is our firestore document reference
+      var schemaDoc = db.collection("schemas").doc(this.schemaKey);
+      // extract indexes from "dropResult"
+      const { removedIndex, addedIndex, payload } = dropResult;
+
+      // If there is a change (added/removed a course) in the local data,
+      // then update schema stored in firestore to reflect this change.
+      if (addedIndex !== null || removedIndex !== null) {
+        schemaDoc.update({
+          courseMap: this.courseMap
+        });
+      }
     },
 
     getChildPayloadBasket(index) {
-      return this.basket[index];
+      return this.courseMap.basket[index];
     },
 
     getChildPayload1(index) {
-      return this.items1[index];
+      return this.courseMap.items1[index];
     },
     getChildPayload2(index) {
-      return this.items2[index];
-    },
-  },
+      return this.courseMap.items2[index];
+    }
+  }
 };
 </script>
 
