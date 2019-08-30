@@ -7,9 +7,10 @@ A drag-and-drop course planner.
 * [Firebase](https://firebase.google.com/docs/firestore/) - cloud firestore database
 
 ## Demo
-
-Drag and drop courses:
+  
+Drag and drop courses:<br/>
 ![Drag and Drop Demo](demo/draggable_demo.gif)
+
 <br/>
-Removing a course:
+Removing a course:<br/>
 ![Deletable Demo](demo/delete_demo.gif)
