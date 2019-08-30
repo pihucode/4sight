@@ -11,6 +11,5 @@ A drag-and-drop course planner.
 Drag and drop courses:<br/>
 ![Drag and Drop Demo](demo/draggable_demo.gif)
 
-<br/>
 Removing a course:<br/>
 ![Deletable Demo](demo/delete_demo.gif)
