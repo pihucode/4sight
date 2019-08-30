@@ -8,5 +8,8 @@ A drag-and-drop course planner.
 
 ## Demo
 
+Drag and drop courses:
 ![Drag and Drop Demo](demo/draggable_demo.gif)
+<br/>
+Removing a course:
 ![Deletable Demo](demo/delete_demo.gif)
